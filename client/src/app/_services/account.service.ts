@@ -4,8 +4,9 @@ import { User } from '../_models/user';
 import { map } from 'rxjs';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn:'root'
 })
+
 export class AccountService {
   private http = inject(HttpClient);
   baseUrl= "http://localhost:5122/api/";
@@ -13,7 +14,7 @@ export class AccountService {
 
   login(model:any)
   {
-    return this.http.post<User>(this.baseUrl + "account/login", model).pipe(
+    return this.http.post<User>(this.baseUrl + "account/login",model).pipe(
       map(user => {
         if(user){
           localStorage.setItem('user', JSON.stringify(user));
@@ -26,7 +27,7 @@ export class AccountService {
 
   register(model:any)
   {
-    return this.http.post<User>(this.baseUrl + "account/register", model).pipe(
+    return this.http.post<User>(this.baseUrl + "account/register",model).pipe(
       map(user => {
         if(user){
           localStorage.setItem('user', JSON.stringify(user));
