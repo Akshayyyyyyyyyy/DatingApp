@@ -6,30 +6,34 @@ using Microsoft.AspNetCore.Mvc;
 using SQLitePCL;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authorization;
+using API.Interfaces;
+using AutoMapper;
+using System.ComponentModel;
+using API.DTOs;
 
 namespace API.Controllers;
 
-public class UsersController(DataContext context) : BaseApiController
-{
-[AllowAnonymous]
-[HttpGet]
-public async Task<ActionResult<IEnumerable<AppUser>>> GetUsers()
-{
-var users = await context.Users.ToListAsync();
-return users;
-}
-
 [Authorize]
-[HttpGet("{id:int}")]  //api/users/2
-public async Task<ActionResult<AppUser>> GetUser(int id)
+public class UsersController(IUserRepository userRepository) : BaseApiController
 {
-var user = await context.Users.FindAsync(id);
+    [HttpGet]
+    public async Task<ActionResult<IEnumerable<MemberDto>>> GetUsers()
+    {
+        var users = await userRepository.GetMembersAsync();
 
-if(user==null)
-{
-    return NotFound();
-}
+        return Ok(users);
+    }
 
-return user;
-}
+    [HttpGet("{username}")]  //api/users/2
+    public async Task<ActionResult<MemberDto>> GetUser(string username)
+    {
+        var user = await userRepository.GetMemberAsync(username);
+
+        if (user == null)
+        {
+            return NotFound();
+        }
+
+        return user;
+    }
 }
